@@ -1,0 +1,17 @@
+export const categories = [
+    { id: 0, category: "All" },
+    { id: 1, category: "Autos & Vehicles" },
+    { id: 2, category: "Comedy" },
+    { id: 3, category: "Education" },
+    { id: 4, category: "Entertainment" },
+    { id: 5, category: "Film & Animation" },
+    { id: 6, category: "Gaming" },
+    { id: 7, category: "Howto & Style" },
+    { id: 8, category: "News & Politics" },
+    { id: 9, category: "Nonprofits & Activism" },
+    { id: 10, category: "People & Blogs" },
+    { id: 11, category: "Pets & Animals" },
+    { id: 12, category: "Science & Technology" },
+    { id: 13, category: "Sports" },
+    { id: 14, category: "Travel & Events" },
+];

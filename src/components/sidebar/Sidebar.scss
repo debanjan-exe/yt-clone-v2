@@ -1,0 +1,21 @@
+.sidebar {
+    .active {
+        background-color: #2e2e2e;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .sidebar {
+        width: 269px;
+        transform: translateX(-100%);
+        position: fixed;
+        overflow-y: scroll;
+        height: 94vh;
+        padding-bottom: 100px;
+        z-index: 999;
+    }
+    .open {
+        transform: translateX(0);
+        display: block;
+    }
+}

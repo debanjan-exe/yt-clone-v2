@@ -1,0 +1,15 @@
+.thumbnail {
+    padding: 0px 0px 0px 0px !important;
+
+    @media only screen and (max-width: 768px) {
+        padding: 0px 12px 0px 12px;
+    }
+}
+
+.details {
+    padding: 0px 0px 0px 10px !important;
+
+    @media only screen and (max-width: 768px) {
+        padding: 0px 12px 0px 12px;
+    }
+}

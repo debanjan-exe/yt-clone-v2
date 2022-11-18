@@ -1,6 +1,6 @@
 export class endpoints {
-    static BASE_URL = "http://localhost:5000/api";
-    // static BASE_URL = "https://yt-clone-server.onrender.com/api";
+    // static BASE_URL = "http://localhost:5000/api";
+    static BASE_URL = "https://yt-clone-server.onrender.com/api";
     // static BASE_URL = "https://yt-clone-server-v1.herokuapp.com/api";
 
     static GET_VIDEOS = `${endpoints.BASE_URL}/videos`;

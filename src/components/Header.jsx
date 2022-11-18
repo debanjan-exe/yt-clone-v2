@@ -231,7 +231,7 @@ const Menu = styled.span`
     padding: 10px 20px;
     border-radius: 5px;
 
-    &:first-child {
+    &:first-of-type {
         &:hover {
             background-color: #1da1f2;
         }

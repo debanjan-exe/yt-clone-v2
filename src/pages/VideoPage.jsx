@@ -16,7 +16,7 @@ import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 // import ShowMoreText from "react-show-more-text";
-// import Comments from "../components/Comments";
+import Comments from "../components/Comments";
 import Recommendations from "../components/Recommendations";
 
 const Container = styled.div``;
@@ -218,26 +218,56 @@ const Videopage = () => {
 
     const handleLike = async () => {
         if (currentUser) {
-            await axios.put(`${endpoints.LIKE_VIDEO}/${currentVideo._id}`);
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: currentUser.access_token,
+                },
+            };
+            await axios.put(
+                `${endpoints.LIKE_VIDEO}/${currentVideo._id}`,
+                {},
+                config
+            );
             dispatch(like(currentUser._id));
         }
     };
 
     const handleDislike = async () => {
         if (currentUser) {
-            await axios.put(`${endpoints.DISLIKE_VIDEO}/${currentVideo._id}`);
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: currentUser.access_token,
+                },
+            };
+            await axios.put(
+                `${endpoints.DISLIKE_VIDEO}/${currentVideo._id}`,
+                {},
+                config
+            );
             dispatch(dislike(currentUser._id));
         }
     };
 
     const handleSubscribe = async () => {
         if (currentUser) {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: currentUser.access_token,
+                },
+            };
             currentUser.subscribedUsers.includes(channel._id)
                 ? await axios.put(
-                      `${endpoints.UNSUBSCRIBE_CHANNEL}/${channel._id}`
+                      `${endpoints.UNSUBSCRIBE_CHANNEL}/${channel._id}`,
+                      {},
+                      config
                   )
                 : await axios.put(
-                      `${endpoints.SUBSCRIBE_CHANNEL}/${channel._id}`
+                      `${endpoints.SUBSCRIBE_CHANNEL}/${channel._id}`,
+                      {},
+                      config
                   );
             dispatch(subscription(channel._id));
             setSubscribed(!subscribed);
@@ -336,7 +366,7 @@ const Videopage = () => {
                                 <Description>{currentVideo?.desc}</Description>
                             </DescriptionDiv>
 
-                            {/* <Comments videoId={currentVideo?._id} /> */}
+                            <Comments videoId={currentVideo?._id} />
                         </VideoWrapper>
                     </Col>
                     <Col lg={4}>

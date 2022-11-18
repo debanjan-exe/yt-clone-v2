@@ -8,6 +8,7 @@ import ProgressBar from "react-percent-bar";
 import { endpoints } from "../utils/Constants";
 import axios from "axios";
 import app from "../firebase";
+import { useSelector } from "react-redux";
 import { useToast } from "@chakra-ui/react";
 import {
     getStorage,
@@ -136,6 +137,7 @@ const Upload = ({ setOpenUploadModal }) => {
     const [tags, setTags] = useState([]);
     const navigate = useNavigate();
     const toast = useToast();
+    const { currentUser } = useSelector((state) => state.user);
 
     useEffect(() => {
         document.body.style = "overflow-y:hidden";
@@ -219,10 +221,20 @@ const Upload = ({ setOpenUploadModal }) => {
             });
         } else {
             try {
-                const res = await axios.post(`${endpoints.GET_VIDEOS}`, {
-                    ...inputs,
-                    tags,
-                });
+                const config = {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: currentUser.access_token,
+                    },
+                };
+                const res = await axios.post(
+                    `${endpoints.GET_VIDEOS}`,
+                    {
+                        ...inputs,
+                        tags,
+                    },
+                    config
+                );
                 if (res.status === 200) {
                     setOpenUploadModal(false);
                     navigate(`/video/${res.data._id}`);

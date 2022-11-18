@@ -23,18 +23,32 @@ const HomePage = ({ type }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchVideos = async () => {
-            const res = await axios.get(`${endpoints.GET_VIDEOS}/${type}`);
-            setVideos(res.data);
-        };
-
         if (type === "sub") {
             if (!currentUser) {
                 navigate("/signin");
             }
-        }
 
-        fetchVideos();
+            const fetchVideos = async () => {
+                const config = {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: currentUser.access_token,
+                    },
+                };
+                const res = await axios.get(
+                    `${endpoints.GET_VIDEOS}/${type}`,
+                    config
+                );
+                setVideos(res.data);
+            };
+            fetchVideos();
+        } else {
+            const fetchVideos = async () => {
+                const res = await axios.get(`${endpoints.GET_VIDEOS}/${type}`);
+                setVideos(res.data);
+            };
+            fetchVideos();
+        }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [type]);

@@ -6,6 +6,8 @@ import styled from "styled-components";
 import Card from "../components/Card";
 import { endpoints } from "../utils/Constants";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { subscription } from "../redux/userSlice";
 
 const Container = styled.div``;
 
@@ -17,7 +19,10 @@ const ChannelDetails = styled.div`
     align-items: center;
 `;
 
-const ChannelInfo = styled.div``;
+const ChannelInfo = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
 
 const Hr = styled.hr`
     margin: 15px 0px;
@@ -49,6 +54,18 @@ const ChannelImg = styled.img`
     }
 `;
 
+const ChannelName = styled.span`
+    font-size: 20px;
+    /* line-height: 18px; */
+    color: #fff;
+    font-weight: 500;
+    padding-bottom: 20px;
+
+    @media only screen and (max-width: 768px) {
+        padding-bottom: 0px;
+    }
+`;
+
 const Title = styled.h1`
     font-size: 20px;
     /* line-height: 18px; */
@@ -62,11 +79,34 @@ const ChannelCounter = styled.span`
     font-size: 20px;
 `;
 
+const Button = styled.div`
+    cursor: pointer;
+    background-color: red;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    justify-content: center;
+    font-weight: 500;
+
+    &:hover {
+        background-color: #de0000;
+    }
+
+    @media only screen and (max-width: 768px) {
+        margin-top: 5px;
+        padding: 5px 10px;
+    }
+`;
+
 const ChannelPage = () => {
     const userId = useLocation().pathname.split("/")[3];
     const [videos, setVideos] = useState([]);
     const [channel, setChannel] = useState({});
     const [likedVideos, setLikedVideos] = useState([]);
+    const dispatch = useDispatch();
+    const [subscribed, setSubscribed] = useState(false);
 
     const { currentUser } = useSelector((state) => state.user);
 
@@ -83,14 +123,50 @@ const ChannelPage = () => {
             setChannel(res.data);
         };
 
-        const fetchLikedVideos = async () => {
-            const res = await axios.get(`${endpoints.USER_LIKED_VIDEOS}`);
-            setLikedVideos(res.data);
-        };
-        fetchLikedVideos();
+        if (currentUser) {
+            const fetchLikedVideos = async () => {
+                const config = {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: currentUser.access_token,
+                    },
+                };
+                const res = await axios.get(
+                    `${endpoints.USER_LIKED_VIDEOS}`,
+                    config
+                );
+                setLikedVideos(res.data);
+            };
+            fetchLikedVideos();
+        }
         fetchChannel();
         fetchVideos();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userId]);
+
+    const handleSubscribe = async () => {
+        if (currentUser) {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: currentUser.access_token,
+                },
+            };
+            currentUser.subscribedUsers.includes(channel._id)
+                ? await axios.put(
+                      `${endpoints.UNSUBSCRIBE_CHANNEL}/${channel._id}`,
+                      {},
+                      config
+                  )
+                : await axios.put(
+                      `${endpoints.SUBSCRIBE_CHANNEL}/${channel._id}`,
+                      {},
+                      config
+                  );
+            dispatch(subscription(channel._id));
+            setSubscribed(!subscribed);
+        }
+    };
 
     return (
         <Container>
@@ -101,10 +177,16 @@ const ChannelPage = () => {
                         <ChannelImg src={channel.img} />
                     </ChannelImgDiv>
                     <ChannelInfo>
-                        <Title>{channel.name}</Title>
+                        <ChannelName>{channel.name}</ChannelName>
                         <ChannelCounter>
                             {channel.subscribers} subscribers
                         </ChannelCounter>
+                        <Button onClick={handleSubscribe}>
+                            {currentUser &&
+                            currentUser.subscribedUsers?.includes(channel._id)
+                                ? "Subscribed"
+                                : "Subscribe"}
+                        </Button>
                     </ChannelInfo>
                 </ChannelDetails>
                 <Hr />
@@ -118,7 +200,7 @@ const ChannelPage = () => {
                     ))}
                 </Row>
                 <Hr />
-                {userId === currentUser._id && (
+                {currentUser && userId === currentUser._id && (
                     <>
                         <Title>Videos Liked by You</Title>
                         {likedVideos && (

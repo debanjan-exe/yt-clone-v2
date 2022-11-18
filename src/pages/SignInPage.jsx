@@ -133,17 +133,12 @@ const SignInPage = () => {
     const handleLogin = async (e) => {
         dispatch(loginStart());
         try {
-            axios.defaults.withCredentials = true;
             const res = await axios.post(`${endpoints.SIGNIN}`, {
                 email,
                 password,
-                withCredentials: true,
-                headers: {
-                    crossDomain: true,
-                    "Content-Type": "application/json",
-                },
             });
-            // console.log(res);
+
+            console.log(res);
             dispatch(loginSuccess(res.data));
             navigate("/");
         } catch (error) {

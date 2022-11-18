@@ -1,15 +1,60 @@
 import axios from "axios";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import Comment from "./Comment";
-import { useSelector } from "react-redux";
-import SortIcon from "@mui/icons-material/Sort";
-import Picker from "emoji-picker-react";
-import TagFacesIcon from "@mui/icons-material/TagFaces";
 import { endpoints } from "../utils/Constants";
+import SortIcon from "@mui/icons-material/Sort";
+import { useSelector } from "react-redux";
+import TagFacesIcon from "@mui/icons-material/TagFaces";
+import Picker from "emoji-picker-react";
+import Comment from "./Comment";
 
 const Container = styled.div`
     /* width: 100%; */
+`;
+
+const CommDetails = styled.div`
+    color: #fff;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+`;
+
+const Noofcomm = styled.span``;
+
+const SortAction = styled.span`
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    gap: 5px;
+    user-select: none;
+    cursor: pointer;
+    position: relative;
+`;
+
+const SortMenu = styled.div`
+    z-index: 1;
+    position: absolute;
+    background-color: ${({ theme }) => theme.bgLighter};
+    bottom: -100px;
+    /* right: px; */
+    width: max-content;
+    font-weight: normal;
+    gap: 3px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 0px 4px 3px rgba(0, 0, 0, 0.09);
+    -moz-box-shadow: 0px 0px 4px 3px rgba(0, 0, 0, 0.09);
+    box-shadow: 0px 0px 4px 3px rgba(0, 0, 0, 0.09);
+    display: flex;
+    flex-direction: column;
+`;
+
+const MenuItem = styled.span`
+    border-radius: 5px;
+    padding: 10px 20px;
+    &:hover {
+        background-color: ${({ theme }) => theme.soft};
+    }
 `;
 
 const NewComment = styled.div`
@@ -31,12 +76,29 @@ const InputContainer = styled.div`
     flex-direction: column;
 `;
 
+const Input = styled.input`
+    color: ${({ theme }) => theme.text};
+    border: none;
+    border-bottom: 1px solid ${({ theme }) => theme.soft};
+    background-color: transparent;
+    padding: 5px;
+    outline: none;
+    /* width: 100%; */
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+
+    &:focus {
+        border-bottom: 1.5px solid ${({ theme }) => theme.text};
+    }
+`;
+
 const ButtonContainer = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-top: 10px;
 `;
+
 const EmojiBtn = styled.div`
     cursor: pointer;
     color: ${({ theme }) => theme.text};
@@ -93,79 +155,20 @@ const Button = styled.button`
     }
 `;
 
-const Input = styled.input`
-    color: ${({ theme }) => theme.text};
-    border: none;
-    border-bottom: 1px solid ${({ theme }) => theme.soft};
-    background-color: transparent;
-    padding: 5px;
-    outline: none;
-    /* width: 100%; */
-    font-size: 16px;
-    transition: all 0.3s ease-in-out;
-
-    &:focus {
-        border-bottom: 1.5px solid ${({ theme }) => theme.text};
-    }
-`;
-
-const CommDetails = styled.div`
-    color: ${({ theme }) => theme.text};
-    margin-bottom: 20px;
-    display: flex;
-    gap: 20px;
-    align-items: center;
-`;
-
-const Noofcomm = styled.span``;
-
-const SortAction = styled.span`
-    display: flex;
-    align-items: center;
-    font-weight: 500;
-    gap: 5px;
-    user-select: none;
-    cursor: pointer;
-    position: relative;
-`;
-
-const SortMenu = styled.div`
-    z-index: 1;
-    position: absolute;
-    background-color: ${({ theme }) => theme.bgLighter};
-    bottom: -90px;
-    /* right: px; */
-    width: max-content;
-    font-weight: normal;
-    gap: 3px;
-    border-radius: 5px;
-    -webkit-box-shadow: 0px 0px 4px 3px rgba(0, 0, 0, 0.09);
-    -moz-box-shadow: 0px 0px 4px 3px rgba(0, 0, 0, 0.09);
-    box-shadow: 0px 0px 4px 3px rgba(0, 0, 0, 0.09);
-    display: flex;
-    flex-direction: column;
-`;
-
-const MenuItem = styled.span`
-    border-radius: 5px;
-    padding: 10px 20px;
-    &:hover {
-        background-color: ${({ theme }) => theme.soft};
-    }
-`;
-
 const PickerContainer = styled.div`
     position: absolute;
+    top: 470px;
+    /* left: 0; */
 `;
 
 const Comments = ({ videoId }) => {
     const [comments, setComments] = useState([]);
+    const [update, setUpdate] = useState(false);
+    const [sort, setSort] = useState(false);
     const { currentUser } = useSelector((state) => state.user);
     const [currentUserComment, setCurrentUserComment] = useState("");
-    const [sort, setSort] = useState(false);
-    const [showBtn, setShowBtn] = useState(false);
-    const [update, setUpdate] = useState(false);
     const [pickerShow, setPickerShow] = useState(false);
+    const [showBtn, setShowBtn] = useState(false);
 
     const refOne = useRef(null);
     const refInput = useRef(null);
@@ -203,11 +206,22 @@ const Comments = ({ videoId }) => {
         }
     };
 
+    const sortByTime = async () => {
+        try {
+            const res = await axios.get(
+                `${endpoints.GET_COMMENTS}/${videoId}?sort=new`
+            );
+            setComments(res.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const handlePostComment = async () => {
         if (currentUserComment) {
             if (currentUser) {
                 try {
-                    const response = await axios.post(endpoints.GET_COMMENTS, {
+                    const response = await axios.post("/api/comments/", {
                         videoId,
                         desc: currentUserComment,
                     });
@@ -217,17 +231,6 @@ const Comments = ({ videoId }) => {
                     console.log(error);
                 }
             }
-        }
-    };
-
-    const sortByTime = async () => {
-        try {
-            const res = await axios.get(
-                `${endpoints.GET_COMMENTS}/${videoId}?sort=new`
-            );
-            setComments(res.data);
-        } catch (error) {
-            console.log(error);
         }
     };
 
@@ -262,6 +265,7 @@ const Comments = ({ videoId }) => {
                             : "https://res.cloudinary.com/debanjan/image/upload/v1667971010/user_yz3ysi.png"
                     }
                 />
+
                 <InputContainer>
                     <Input
                         placeholder="Add a comment..."
@@ -277,6 +281,7 @@ const Comments = ({ videoId }) => {
                         }}
                         ref={refInput}
                     />
+
                     {showBtn && (
                         <ButtonContainer>
                             <EmojiBtn
@@ -284,6 +289,7 @@ const Comments = ({ videoId }) => {
                             >
                                 <TagFacesIcon />
                             </EmojiBtn>
+
                             <Btns>
                                 <CText
                                     onClick={() => {

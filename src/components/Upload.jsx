@@ -267,6 +267,7 @@ const Upload = ({ setOpenUploadModal }) => {
                     <UploadScreen>
                         <Animation>
                             <Lottie
+                                onClick={handleInputFile}
                                 animationData={upload}
                                 loop={true}
                                 style={{

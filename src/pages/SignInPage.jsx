@@ -219,7 +219,7 @@ const SignInPage = () => {
     const uploadProfileImg = (pics) => {
         if (pics === undefined) {
             toast({
-                title: "Please Select an image1",
+                title: "Please Select an image",
                 status: "warning",
                 duration: 3000,
                 isClosable: true,
@@ -239,6 +239,13 @@ const SignInPage = () => {
                     .then((res) => res.json())
                     .then((data) => {
                         setImg(data.url.toString());
+                        toast({
+                            title: "Profile pic uploaded sucessfully",
+                            status: "success",
+                            duration: 3000,
+                            isClosable: true,
+                            position: "bottom-left",
+                        });
                     })
                     .catch((err) => {
                         console.log(err);

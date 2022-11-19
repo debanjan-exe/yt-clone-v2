@@ -35,9 +35,9 @@
 ## Mobile Responsive too
 
 <p float="left">
-  <img src="https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668862623621-1x.jpeg?raw=true" width="200" />
-  <img src="https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668862584335-1x.jpeg?raw=true" width="200" /> 
-  <img src="https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668863327505-1x.jpeg?raw=true" width="200" />
+  <img src="https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668862623621-1x.jpeg?raw=true" width="250" />
+  <img src="https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668862584335-1x.jpeg?raw=true" width="250" /> 
+  <img src="https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668863327505-1x.jpeg?raw=true" width="250" />
 </p>
 
 # Getting Started with Create React App

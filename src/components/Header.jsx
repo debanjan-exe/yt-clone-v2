@@ -321,6 +321,11 @@ const Header = ({ openSidebar, setOpenSidebar }) => {
                                 placeholder="Search"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        navigate(`/search?q=${input}`);
+                                    }
+                                }}
                             />
                             <SearchIcon
                                 onClick={() => {

@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
 import Picker from "emoji-picker-react";
 import Comment from "./Comment";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Container = styled.div`
     /* width: 100%; */
@@ -61,7 +62,6 @@ const NewComment = styled.div`
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    position: relative;
 `;
 
 const Avatar = styled.img`
@@ -108,6 +108,7 @@ const EmojiBtn = styled.div`
     border-radius: 50%;
     padding: 5px;
     transition: all 0.1s ease-in-out;
+    position: relative;
 
     &:hover {
         background-color: ${({ theme }) => theme.soft};
@@ -156,9 +157,19 @@ const Button = styled.button`
 `;
 
 const PickerContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
     position: absolute;
-    top: 470px;
-    /* left: 0; */
+    /* bottom: 0; */
+    top: 15px;
+    left: 0;
+
+    @media only screen and (max-width: 500px) {
+        top: 35px;
+        left: -42px;
+        align-items: flex-start;
+    }
 `;
 
 const Comments = ({ videoId }) => {
@@ -175,7 +186,9 @@ const Comments = ({ videoId }) => {
 
     const fetchComments = async () => {
         try {
-            const res = await axios.get(`${endpoints.GET_COMMENTS}/${videoId}`);
+            const res = await axios.get(
+                `${endpoints.GET_COMMENTS}/${videoId}?sort=new`
+            );
             setComments(res.data);
         } catch (error) {
             console.log(error);
@@ -206,11 +219,9 @@ const Comments = ({ videoId }) => {
         }
     };
 
-    const sortByTime = async () => {
+    const sortByTopComments = async () => {
         try {
-            const res = await axios.get(
-                `${endpoints.GET_COMMENTS}/${videoId}?sort=new`
-            );
+            const res = await axios.get(`${endpoints.GET_COMMENTS}/${videoId}`);
             setComments(res.data);
         } catch (error) {
             console.log(error);
@@ -221,12 +232,24 @@ const Comments = ({ videoId }) => {
         if (currentUserComment) {
             if (currentUser) {
                 try {
-                    const response = await axios.post("/api/comments/", {
-                        videoId,
-                        desc: currentUserComment,
-                    });
+                    const config = {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: currentUser.access_token,
+                        },
+                    };
+                    const response = await axios.post(
+                        `${endpoints.GET_COMMENTS}`,
+                        {
+                            videoId,
+                            desc: currentUserComment,
+                        },
+                        config
+                    );
                     setComments([response.data, ...comments]);
                     setCurrentUserComment("");
+                    setPickerShow(false);
+                    setShowBtn(false);
                 } catch (error) {
                     console.log(error);
                 }
@@ -247,10 +270,10 @@ const Comments = ({ videoId }) => {
                     Sort by
                     {sort && (
                         <SortMenu>
-                            <MenuItem onClick={fetchComments}>
+                            <MenuItem onClick={sortByTopComments}>
                                 Top Comments
                             </MenuItem>
-                            <MenuItem onClick={sortByTime}>
+                            <MenuItem onClick={fetchComments}>
                                 Newest First
                             </MenuItem>
                         </SortMenu>
@@ -284,10 +307,21 @@ const Comments = ({ videoId }) => {
 
                     {showBtn && (
                         <ButtonContainer>
-                            <EmojiBtn
-                                onClick={() => setPickerShow(!pickerShow)}
-                            >
-                                <TagFacesIcon />
+                            <EmojiBtn>
+                                <TagFacesIcon
+                                    onClick={() => setPickerShow(!pickerShow)}
+                                />
+                                {pickerShow && (
+                                    <PickerContainer>
+                                        <CloseIcon
+                                            style={{
+                                                cursor: "pointer",
+                                            }}
+                                            onClick={() => setPickerShow(false)}
+                                        />
+                                        <Picker onEmojiClick={onEmojiClick} />
+                                    </PickerContainer>
+                                )}
                             </EmojiBtn>
 
                             <Btns>
@@ -308,18 +342,13 @@ const Comments = ({ videoId }) => {
                 </InputContainer>
             </NewComment>
 
-            {pickerShow && (
-                <PickerContainer>
-                    <Picker onEmojiClick={onEmojiClick} />
-                </PickerContainer>
-            )}
-
             {comments?.map((comment) => (
                 <Comment
                     update={update}
                     setUpdate={setUpdate}
                     key={comment._id}
                     comment={comment}
+                    comments={comments}
                     setComments={setComments}
                 />
             ))}

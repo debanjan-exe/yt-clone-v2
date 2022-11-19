@@ -138,7 +138,7 @@ const SignInPage = () => {
                 password,
             });
 
-            console.log(res);
+            // console.log(res);
             dispatch(loginSuccess(res.data));
             navigate("/");
         } catch (error) {

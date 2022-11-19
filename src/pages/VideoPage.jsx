@@ -18,6 +18,8 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 // import ShowMoreText from "react-show-more-text";
 import Comments from "../components/Comments";
 import Recommendations from "../components/Recommendations";
+import { useToast } from "@chakra-ui/react";
+import "./VideoPage.scss";
 
 const Container = styled.div``;
 
@@ -97,6 +99,7 @@ const Buttons = styled.div`
     color: ${({ theme }) => theme.text};
 
     @media only screen and (max-width: 768px) {
+        justify-content: center;
         margin: 20px;
         width: 100%;
         overflow-x: scroll;
@@ -105,6 +108,9 @@ const Buttons = styled.div`
         &::-webkit-scrollbar {
             display: none;
         }
+    }
+    @media only screen and (max-width: 500px) {
+        justify-content: start;
     }
 `;
 
@@ -196,7 +202,8 @@ const Videopage = () => {
     const [channel, setChannel] = useState({});
     const dispatch = useDispatch();
     const [subscribed, setSubscribed] = useState(false);
-
+    const [subscribeBtnClick, setSubscribeBtnClick] = useState(false);
+    const toast = useToast();
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -214,7 +221,7 @@ const Videopage = () => {
         };
         fetchData();
         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-    }, [path, dispatch]);
+    }, [path, dispatch, subscribeBtnClick]);
 
     const handleLike = async () => {
         if (currentUser) {
@@ -230,6 +237,13 @@ const Videopage = () => {
                 config
             );
             dispatch(like(currentUser._id));
+            toast({
+                title: `Liked this video`,
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+                position: "bottom-left",
+            });
         }
     };
 
@@ -247,6 +261,13 @@ const Videopage = () => {
                 config
             );
             dispatch(dislike(currentUser._id));
+            toast({
+                title: `Disliked this video`,
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+                position: "bottom-left",
+            });
         }
     };
 
@@ -271,6 +292,22 @@ const Videopage = () => {
                   );
             dispatch(subscription(channel._id));
             setSubscribed(!subscribed);
+            setSubscribeBtnClick(!subscribeBtnClick);
+            currentUser.subscribedUsers.includes(channel._id)
+                ? toast({
+                      title: `Unsubscribed to ${channel.name}`,
+                      status: "error",
+                      duration: 3000,
+                      isClosable: true,
+                      position: "bottom-left",
+                  })
+                : toast({
+                      title: `Subscribed to ${channel.name}`,
+                      status: "success",
+                      duration: 3000,
+                      isClosable: true,
+                      position: "bottom-left",
+                  });
         }
     };
 
@@ -278,95 +315,101 @@ const Videopage = () => {
         <Container>
             <Wrapper>
                 <Row>
-                    <Col lg={8}>
+                    <Col lg={8} className="left_col">
                         <VideoWrapper>
                             <VideoFrame src={currentVideo?.videoUrl} controls />
-                            <Title>{currentVideo?.title}</Title>
+                            <div className="video_details">
+                                <Title>{currentVideo?.title}</Title>
 
-                            <InfoMobile>
-                                {currentVideo?.views} views •{" "}
-                                <TimeAgo
-                                    date={currentVideo?.createdAt}
-                                    style={{ marginLeft: "3px" }}
-                                />
-                            </InfoMobile>
-
-                            <Details>
-                                <Channel>
-                                    <ChannelInfo>
-                                        <Link
-                                            to={`/videos/channel/${channel._id}`}
-                                        >
-                                            <ChannelImage src={channel.img} />
-                                        </Link>
-                                        <ChannelDetail>
-                                            <ChannelName>
-                                                {channel.name}
-                                            </ChannelName>
-                                            <ChannelCounter>
-                                                {channel.subscribers}{" "}
-                                                subscribers
-                                            </ChannelCounter>
-                                        </ChannelDetail>
-                                    </ChannelInfo>
-                                    <Subscribe
-                                        onClick={handleSubscribe}
-                                        // currentUser={currentUser}
-                                        // channel={channel}
-                                    >
-                                        {currentUser &&
-                                        currentUser.subscribedUsers?.includes(
-                                            channel._id
-                                        )
-                                            ? "Subscribed"
-                                            : "Subscribe"}
-                                    </Subscribe>
-                                </Channel>
-
-                                <Buttons>
-                                    <Button onClick={handleLike}>
-                                        {currentUser &&
-                                        currentVideo?.likes?.includes(
-                                            currentUser._id
-                                        ) ? (
-                                            <ThumbUpIcon />
-                                        ) : (
-                                            <ThumbUpOutlinedIcon />
-                                        )}
-                                        {currentVideo?.likes?.length}
-                                    </Button>
-                                    <Button onClick={handleDislike}>
-                                        {currentUser &&
-                                        currentVideo?.dislikes?.includes(
-                                            currentUser._id
-                                        ) ? (
-                                            <ThumbDownIcon />
-                                        ) : (
-                                            <ThumbDownAltOutlinedIcon />
-                                        )}
-                                        Dislike
-                                    </Button>
-                                    <Button>
-                                        <ReplyOutlinedIcon /> Share
-                                    </Button>
-                                    <Button>
-                                        <PlaylistAddIcon /> Save
-                                    </Button>
-                                </Buttons>
-                            </Details>
-
-                            <DescriptionDiv>
-                                <Info>
+                                <InfoMobile>
                                     {currentVideo?.views} views •{" "}
                                     <TimeAgo
                                         date={currentVideo?.createdAt}
                                         style={{ marginLeft: "3px" }}
                                     />
-                                </Info>
-                                <Description>{currentVideo?.desc}</Description>
-                            </DescriptionDiv>
+                                </InfoMobile>
 
-                            <Comments videoId={currentVideo?._id} />
+                                <Details>
+                                    <Channel>
+                                        <ChannelInfo>
+                                            <Link
+                                                to={`/videos/channel/${channel._id}`}
+                                            >
+                                                <ChannelImage
+                                                    src={channel.img}
+                                                />
+                                            </Link>
+                                            <ChannelDetail>
+                                                <ChannelName>
+                                                    {channel.name}
+                                                </ChannelName>
+                                                <ChannelCounter>
+                                                    {channel.subscribers}{" "}
+                                                    subscribers
+                                                </ChannelCounter>
+                                            </ChannelDetail>
+                                        </ChannelInfo>
+                                        <Subscribe
+                                            onClick={handleSubscribe}
+                                            // currentUser={currentUser}
+                                            // channel={channel}
+                                        >
+                                            {currentUser &&
+                                            currentUser.subscribedUsers?.includes(
+                                                channel._id
+                                            )
+                                                ? "Subscribed"
+                                                : "Subscribe"}
+                                        </Subscribe>
+                                    </Channel>
+
+                                    <Buttons>
+                                        <Button onClick={handleLike}>
+                                            {currentUser &&
+                                            currentVideo?.likes?.includes(
+                                                currentUser._id
+                                            ) ? (
+                                                <ThumbUpIcon />
+                                            ) : (
+                                                <ThumbUpOutlinedIcon />
+                                            )}
+                                            {currentVideo?.likes?.length}
+                                        </Button>
+                                        <Button onClick={handleDislike}>
+                                            {currentUser &&
+                                            currentVideo?.dislikes?.includes(
+                                                currentUser._id
+                                            ) ? (
+                                                <ThumbDownIcon />
+                                            ) : (
+                                                <ThumbDownAltOutlinedIcon />
+                                            )}
+                                            Dislike
+                                        </Button>
+                                        <Button>
+                                            <ReplyOutlinedIcon /> Share
+                                        </Button>
+                                        <Button>
+                                            <PlaylistAddIcon /> Save
+                                        </Button>
+                                    </Buttons>
+                                </Details>
+
+                                <DescriptionDiv>
+                                    <Info>
+                                        {currentVideo?.views} views •{" "}
+                                        <TimeAgo
+                                            date={currentVideo?.createdAt}
+                                            style={{ marginLeft: "3px" }}
+                                        />
+                                    </Info>
+                                    <Description>
+                                        {currentVideo?.desc}
+                                    </Description>
+                                </DescriptionDiv>
+
+                                <Comments videoId={currentVideo?._id} />
+                            </div>
                         </VideoWrapper>
                     </Col>
                     <Col lg={4}>

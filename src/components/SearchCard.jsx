@@ -109,7 +109,7 @@ const SearchCard = ({ video }) => {
                                 <Info>
                                     {numeral(video.views)
                                         .format("0a")
-                                        .toUpperCase()}
+                                        .toUpperCase()}{" "}
                                     views • <TimeAgo date={video.createdAt} />
                                 </Info>
 

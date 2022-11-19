@@ -5,6 +5,7 @@ import numeral from "numeral";
 import { endpoints } from "../utils/Constants";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
+import cardImgBg from "../assets/img/card-img-bg.jpg";
 
 const CardDiv = styled.div`
     // padding: 0.7rem;
@@ -125,10 +126,7 @@ const Card = ({ video }) => {
             <Link to={`/video/${video._id}`} style={{ textDecoration: "none" }}>
                 <VideoImgDiv>
                     <Img
-                        src={
-                            video.imgUrl ||
-                            "https://wallpaperaccess.com/full/1285952.jpg"
-                        }
+                        src={video.imgUrl || cardImgBg}
                         alt="video_thumbnail"
                     />
                     <VideoDuration>{"2:34"}</VideoDuration>
@@ -149,7 +147,12 @@ const Card = ({ video }) => {
                 <Details>
                     <Title>{video.title}</Title>
                     <ExtraDetails>
-                        <ChannelName>{channel.name}</ChannelName>
+                        <Link
+                            to={`/videos/channel/${channel._id}`}
+                            style={{ textDecoration: "none" }}
+                        >
+                            <ChannelName>{channel.name}</ChannelName>
+                        </Link>
                         <Info>
                             <Dot>• </Dot>
                             {numeral(video.views)

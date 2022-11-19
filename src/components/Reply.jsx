@@ -55,23 +55,39 @@ const Text = styled.span`
     font-size: 14px;
 `;
 
-const Reply = ({ comment, reply, update, setUpdate }) => {
+const Reply = ({
+    comments,
+    setComments,
+    comment,
+    reply,
+    update,
+    setUpdate,
+}) => {
     const [userData, setUserData] = useState({});
     const { currentUser } = useSelector((state) => state.user);
 
     useEffect(() => {
-        const fetchComment = async () => {
+        const fetchUser = async () => {
             const res = await axios.get(`${endpoints.USER}/${reply.userId}`);
             setUserData(res.data);
         };
-        fetchComment();
+        fetchUser();
     }, [reply.userId]);
 
     const handleReplyDelete = async () => {
         if (currentUser) {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: currentUser.access_token,
+                },
+            };
             await axios.put(
-                `${endpoints.GET_COMMENTS}/reply/${comment._id}/${reply._id}`
+                `${endpoints.GET_COMMENTS}/reply/${comment._id}/delete/${reply._id}`,
+                {},
+                config
             );
+            setUpdate(!update);
         }
     };
 
@@ -89,12 +105,7 @@ const Reply = ({ comment, reply, update, setUpdate }) => {
                 <Text>
                     {reply.desc}{" "}
                     {currentUser && currentUser._id === reply.userId && (
-                        <DelRep
-                            onClick={() => {
-                                handleReplyDelete();
-                                setUpdate(!update);
-                            }}
-                        >
+                        <DelRep onClick={handleReplyDelete}>
                             <DeleteOutlineIcon fontSize="10px" />
                         </DelRep>
                     )}

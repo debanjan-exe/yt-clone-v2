@@ -30,12 +30,6 @@ const Recommendations = ({ tags }) => {
                 {videos.map((video) => (
                     <RecCards key={video._id} video={video} />
                 ))}
-                {videos.map((video) => (
-                    <RecCards key={video._id} video={video} />
-                ))}
-                {videos.map((video) => (
-                    <RecCards key={video._id} video={video} />
-                ))}
             </Wrapper>
         </Container>
     );

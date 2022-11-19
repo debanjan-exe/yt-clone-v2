@@ -8,6 +8,7 @@ import { endpoints } from "../utils/Constants";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { subscription } from "../redux/userSlice";
+import { useToast } from "@chakra-ui/react";
 
 const Container = styled.div``;
 
@@ -107,6 +108,8 @@ const ChannelPage = () => {
     const [likedVideos, setLikedVideos] = useState([]);
     const dispatch = useDispatch();
     const [subscribed, setSubscribed] = useState(false);
+    const [subscribeBtnClick, setSubscribeBtnClick] = useState(false);
+    const toast = useToast();
 
     const { currentUser } = useSelector((state) => state.user);
 
@@ -142,7 +145,7 @@ const ChannelPage = () => {
         fetchChannel();
         fetchVideos();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userId]);
+    }, [userId, subscribeBtnClick]);
 
     const handleSubscribe = async () => {
         if (currentUser) {
@@ -163,8 +166,25 @@ const ChannelPage = () => {
                       {},
                       config
                   );
+
             dispatch(subscription(channel._id));
             setSubscribed(!subscribed);
+            setSubscribeBtnClick(!subscribeBtnClick);
+            currentUser.subscribedUsers.includes(channel._id)
+                ? toast({
+                      title: `Unsubscribed to ${channel.name}`,
+                      status: "error",
+                      duration: 3000,
+                      isClosable: true,
+                      position: "bottom-left",
+                  })
+                : toast({
+                      title: `Subscribed to ${channel.name}`,
+                      status: "success",
+                      duration: 3000,
+                      isClosable: true,
+                      position: "bottom-left",
+                  });
         }
     };
 

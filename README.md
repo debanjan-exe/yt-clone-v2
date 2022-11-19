@@ -1,3 +1,36 @@
+# Modern YouTube v2
+
+## ![image](https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668861514482-1x.jpeg?raw=true)
+## ![image](https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668861636572-1x.jpeg?raw=true)
+
+## Easy Sign In & Sign Up
+## ![image](https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668861549537-1x.jpeg?raw=true)
+
+## Channel Page
+## ![image](https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668861776875-1x.jpeg?raw=true)
+
+## Search Page
+## ![image](https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668861815723-1x.jpeg?raw=true)
+
+## Search With Voice
+## ![image](https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668861863842-1x.jpeg?raw=true)
+
+## Easy Video Upload
+## ![image](https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668862488162-1x.jpeg?raw=true)
+## ![image](https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668863506942-1x.jpeg?raw=true)
+<!-- 
+
+## ![image](https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668862623621-1x.jpeg?raw=true)
+## ![image](https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668862584335-1x.jpeg?raw=true)
+## ![image](https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668863327505-1x.jpeg?raw=true) -->
+## Mobile Responsive too
+<p float="left">
+  <img src="https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668862623621-1x.jpeg?raw=true" width="320" />
+  <img src="https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668862584335-1x.jpeg?raw=true" width="320" /> 
+  <img src="https://github.com/debanjan-exe/yt-clone-v2/blob/master/mockups/pika-1668863327505-1x.jpeg?raw=true" width="320" />
+</p>
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

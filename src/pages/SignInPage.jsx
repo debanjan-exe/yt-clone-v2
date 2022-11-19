@@ -140,6 +140,13 @@ const SignInPage = () => {
 
             // console.log(res);
             dispatch(loginSuccess(res.data));
+            toast({
+                title: "Login Successfull",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+                position: "bottom-left",
+            });
             navigate("/");
         } catch (error) {
             toast({
@@ -167,6 +174,13 @@ const SignInPage = () => {
                     .then((res) => {
                         // console.log(res.data);
                         dispatch(loginSuccess(res.data));
+                        toast({
+                            title: "Login Successfull",
+                            status: "success",
+                            duration: 3000,
+                            isClosable: true,
+                            position: "bottom-left",
+                        });
                         navigate("/");
                     });
             })

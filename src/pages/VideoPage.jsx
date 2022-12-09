@@ -317,7 +317,7 @@ const Videopage = () => {
                 <Row>
                     <Col lg={8} className="left_col">
                         <VideoWrapper>
-                            <VideoFrame src={currentVideo?.videoUrl} controls />
+                            <VideoFrame autoPlay src={currentVideo?.videoUrl} controls />
                             <div className="video_details">
                                 <Title>{currentVideo?.title}</Title>
 
